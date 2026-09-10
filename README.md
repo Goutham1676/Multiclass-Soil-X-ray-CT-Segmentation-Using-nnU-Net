@@ -4,9 +4,8 @@ This project focuses on multiclass segmentation of soil X-ray CT images using
 nnU-Net. The classes of interest are soil matrix, stones, organic matter,
 roots, biopores, and other pores.
 
-The goal is to develop a workflow that starts with manual annotation of
-ground truth labels and continues through nnU-Net training, prediction, and
-evaluation.
+The goal is to build a workflow that starts with manual annotation of ground
+truth labels and continues through nnU-Net training, prediction, and evaluation.
 
 ## Project Workflow
 
@@ -15,10 +14,10 @@ The planned workflow is:
 CT images → annotation in Napari → manual annotation review →
 nnU-Net data preparation → preprocessing → training → prediction → evaluation
 
-Napari will be used to create the ground truth annotations. The annotations
+Napari will be used to create the ground truth annotations. These annotations
 will be manually reviewed before they are used for training.
 
-nnU-Net will be used for multiclass segmentation, and segmentation performance
+nnU-Net will be used for multiclass segmentation, and the segmentation results
 will mainly be evaluated using Dice scores for each class.
 
 ## Repository Structure
@@ -28,26 +27,33 @@ will mainly be evaluated using Dice scores for each class.
 - `scripts/` – scripts used in the workflow
 - `guides/` – supporting documentation from the course template
 - `.github/` – GitHub Actions workflows
-- `environment.yml` – software environment
+- `environment.yml` – software environment information
 - `pyproject.toml` – Python project configuration
+
+## Setup
+
+The project environment is currently defined in `environment.yml`.
+
+Installation and setup instructions for Napari, nnU-Net, and other required
+tools will be added to this README as the project progresses.
 
 ## Current Status
 
-Milestone 1 includes:
-- initial GitHub repository setup
-- project proposal
-- project workflow
-- initial software environment and repository structure
+For Milestone 1, the repository currently includes:
+
+- the initial GitHub repository setup
+- the project proposal
+- the planned project workflow
+- the initial software environment and repository structure
 
 ## Next Step
 
-The next planned step is to finalize the segmentation class definitions and
-begin creating representative ground truth annotations in Napari.
+The next step is to finalize the segmentation class definitions and begin
+creating representative ground truth annotations in Napari.
 
 ## Related Work
 
-Existing work has demonstrated the use of nnU-Net for soil X-ray CT
-segmentation. The `nnUNet4SoilXrayCT` repository will be used as a reference
-while developing this project. This project is not intended to reproduce that
-implementation, but to develop and evaluate the workflow for the current
-dataset and segmentation classes.
+The `nnUNet4SoilXrayCT` repository provides an example of using nnU-Net for
+soil X-ray CT segmentation and will be used as a reference during this project.
+The goal here is not to reproduce that work, but to apply and evaluate the
+workflow using the current dataset and segmentation classes.
