@@ -53,7 +53,5 @@ creating representative ground truth annotations in Napari.
 
 ## Related Work
 
-The `nnUNet4SoilXrayCT` repository provides an example of using nnU-Net for
-soil X-ray CT segmentation and will be used as a reference during this project.
-The goal here is not to reproduce that work, but to apply and evaluate the
-workflow using the current dataset and segmentation classes.
+The [nnUNet4SoilXrayCT repository](https://github.com/MaxPhal/nnUNet4SoilXrayCT)
+repository provides an example of using nnU-Net for soil X-ray CT segmentation and will be used as a reference during this project. The goal here is not to reproduce that work, but to apply and evaluate the workflow using the current dataset with a different set of segmentation classes.
