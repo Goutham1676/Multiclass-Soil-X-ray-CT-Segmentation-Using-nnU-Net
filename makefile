@@ -5,7 +5,7 @@
 #
 # after activating your environment.
 
-PACKAGE = mypackage
+PACKAGE = soilct_segmentation
 
 help:
 	@echo ""

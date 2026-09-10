@@ -17,7 +17,7 @@ __all__ = list(_api.__all__)
 # Optional: expose package version from installed metadata.
 # When running directly from source, metadata may not exist yet.
 try:
-    __version__ = version("mypackage")
+    __version__ = version("soilct-segmentation")
 except PackageNotFoundError:
     __version__ = "0.0.0"
 
@@ -26,14 +26,14 @@ except PackageNotFoundError:
 # ---------------------------------------------------------------------------
 # 1) Grouped imports from multiple modules:
 # Learn more: https://realpython.com/python-modules-packages/
-# from mypackage.algebra import solve_linear
-# from mypackage.stats import mean_center
+# from soilct_segmentation.algebra import solve_linear
+# from soilct_segmentation.stats import mean_center
 # __all__.extend(["solve_linear", "mean_center"])
 
 # 2) Re-export everything from selected submodules using a loop:
 # Learn more: https://docs.python.org/3/reference/import.html
-# from mypackage import algebra as _algebra
-# from mypackage import stats as _stats
+# from soilct_segmentation import algebra as _algebra
+# from soilct_segmentation import stats as _stats
 #
 # for _module in (_algebra, _stats):
 #     __all__.extend(getattr(_module, "__all__", []))
@@ -42,6 +42,6 @@ except PackageNotFoundError:
 # Learn more: https://peps.python.org/pep-0562/
 # def __getattr__(name: str):
 #     if name == "slow_model":
-#         from mypackage.models import slow_model
+#         from soilct_segmentation.models import slow_model
 #         return slow_model
 #     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

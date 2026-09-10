@@ -1,4 +1,4 @@
-"""Test package for mypackage.
+"""Test package for soilct_segmentation.
 
 Overview:
 - Purpose: Mark this directory as a Python test package.

@@ -30,9 +30,9 @@ from soilct_segmentation import clip_and_scale, power_self
 # or environment is usually the first thing to check.
 def test_imports() -> None:
     """Sanity-check import path for the package."""
-    import mypackage
+    import soilct_segmentation
 
-    assert hasattr(mypackage, "power_self")
+    assert hasattr(soilct_segmentation, "power_self")
 
 
 # Pattern 2: fixture

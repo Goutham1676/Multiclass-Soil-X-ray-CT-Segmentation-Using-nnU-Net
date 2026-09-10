@@ -39,7 +39,7 @@ jobs:
 
       - name: Build API docs
         run: |
-          pdoc --docformat google -o docs mypackage
+          pdoc --docformat google -o docs soilct_segmentation
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

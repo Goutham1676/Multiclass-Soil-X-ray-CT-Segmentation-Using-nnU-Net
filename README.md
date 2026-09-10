@@ -143,7 +143,7 @@ make init
 make docs
 ```
 
-Docstring features already demonstrated in [mypackage/example.py](mypackage/example.py):
+Docstring features already demonstrated in [soilct_segmentation/example.py](soilct_segmentation/example.py):
 
 - `Args`, `Returns`, and `Raises` sections
 - `Examples` that readers can copy/paste
