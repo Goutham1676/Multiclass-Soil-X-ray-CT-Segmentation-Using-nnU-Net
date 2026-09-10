@@ -21,7 +21,7 @@ Additional tutorials:
 
 import pytest
 
-from mypackage import clip_and_scale, power_self
+from soilct_segmentation import clip_and_scale, power_self
 
 
 # Pattern 1: import/smoke test

@@ -8,14 +8,14 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mypackage"
+name = "soilct-segmentation"
 version = "0.1.0"
 description = "Starter package for research software projects"
 readme = "README.md"
 requires-python = ">=3.11"
 
 [tool.setuptools.packages.find]
-include = ["mypackage*"]
+include = ["soilct-segmentation*"]
 
 [tool.black]
 line-length = 88
@@ -38,4 +38,4 @@ no_implicit_optional = true
 
 [tool.pytest.ini_options]
 addopts = "-ra"
-testpaths = ["mypackage/tests"]
+testpaths = ["soilct-segmentation/tests"]
