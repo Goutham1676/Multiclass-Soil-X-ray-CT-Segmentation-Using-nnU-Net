@@ -42,7 +42,6 @@ def load_dataset_info(dataset_info_path):
 
     with open(
         dataset_info_path,
-        "r",
         encoding="utf-8",
     ) as file:
         dataset_info = json.load(file)
@@ -473,6 +472,7 @@ def summarize_annotations(
     for label_id, count in zip(
         unique_labels,
         counts,
+        strict=True,
     ):
         class_name = labels_by_id.get(
             str(label_id),

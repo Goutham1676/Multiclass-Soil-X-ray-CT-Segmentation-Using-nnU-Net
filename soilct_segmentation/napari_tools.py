@@ -1,7 +1,7 @@
 """Napari utilities for interactive soil CT annotation."""
 
-import numpy as np
 import napari
+import numpy as np
 
 from soilct_segmentation.annotation import (
     save_annotations,

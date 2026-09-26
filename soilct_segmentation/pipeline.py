@@ -12,15 +12,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from soilct_segmentation.image_io import (
-    load_tiff,
-    select_tiff_file,
-)
-
-from soilct_segmentation.preprocessing import (
-    normalization_decision,
-)
-
 from soilct_segmentation.annotation import (
     get_annotation_file,
     load_dataset_info,
@@ -28,10 +19,16 @@ from soilct_segmentation.annotation import (
     select_matrix_thresholds,
     summarize_annotations,
 )
-
+from soilct_segmentation.image_io import (
+    load_tiff,
+    select_tiff_file,
+)
 from soilct_segmentation.napari_tools import (
     open_annotation_viewer,
     setup_annotation_saving,
+)
+from soilct_segmentation.preprocessing import (
+    normalization_decision,
 )
 
 
