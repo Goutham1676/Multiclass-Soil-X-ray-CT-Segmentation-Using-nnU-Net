@@ -137,3 +137,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Project-specific local files
+/anaconda_projects/
+.Rhistory
+/.virtual_documents/
