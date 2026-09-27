@@ -59,39 +59,22 @@ Milestone 1 established:
 
 ### Milestone 2
 
-The current prototype now includes:
+Milestone 2 established the initial working environment for soil X-ray CT segmentation and annotation. The main outcomes are:
 
-- 3D TIFF stack loading
-- representative middle-slice selection
-- CT intensity inspection
-- optional user-controlled normalization
-- Otsu-based matrix initialization
-- interactive lower and upper threshold refinement
-- multiclass annotation definitions through `dataset_info.json`
-- 3D annotation-volume creation
-- automatic reloading of existing annotations
-- interactive annotation in Napari
-- manual saving with `Ctrl+S`
-- automatic saving when Napari closes
-- reusable Python modules with docstrings
-- a simplified user-facing notebook
-- a detailed prototype/reference notebook
-- automated tests using `pytest`
+- created the preprocessing environment for loading, inspecting, and normalizing 3D soil X-ray CT images
+- developed an initial segmentation workflow using Otsu thresholding with user-adjustable thresholds
+- integrated a Napari-based interface for multiclass annotation and manual refinement
+- added support for saving and reloading annotation volumes for continued editing
+- organized the workflow into reusable Python modules with a simplified notebook interface
+- added basic automated tests and validated the workflow through GitHub Actions
 
 ## Next Steps
 
-The next stage of the project will focus on preparing completed ground truth
-annotations for nnU-Net training.
+The next phase will focus on:
 
-Planned next steps include:
-
-1. Complete and review representative multiclass annotations.
-2. Convert CT images and labels into the nnU-Net dataset format.
-3. Configure the nnU-Net dataset.
-4. Run nnU-Net preprocessing.
-5. Train the multiclass segmentation model.
-6. Generate predictions on held-out CT images.
-7. Evaluate segmentation performance using class-specific Dice scores.
+- completing and reviewing representative multiclass annotations
+- preparing CT images and labels in nnU-Net format
+- training and evaluating the multiclass segmentation model
 
 ## Related Work
 
