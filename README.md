@@ -61,7 +61,7 @@ Milestone 1 established:
 
 Milestone 2 established the initial working environment for soil X-ray CT segmentation and annotation. The main outcomes are:
 
-- created the preprocessing environment for loading, inspecting, and normalizing 3D soil X-ray CT images
+- created the preprocessing environment for loading a subset, inspecting, and normalizing 3D soil X-ray CT images
 - developed an initial segmentation workflow using Otsu thresholding with user-adjustable thresholds
 - integrated a Napari-based interface for multiclass annotation and manual refinement
 - added support for saving and reloading annotation volumes for continued editing
