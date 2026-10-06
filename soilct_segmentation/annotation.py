@@ -31,14 +31,18 @@ def load_dataset_info(dataset_info_path):
     dataset_info_path = Path(dataset_info_path)
 
     if not dataset_info_path.exists():
-        raise FileNotFoundError(f"Dataset information file not found: {dataset_info_path}")
+        raise FileNotFoundError(
+            f"Dataset information file not found: {dataset_info_path}"
+        )
 
     with open(dataset_info_path, encoding="utf-8") as file:
         dataset_info = json.load(file)
 
     labels_by_id = dataset_info["labels"]
     colors_by_id = dataset_info["colors"]
-    labels_by_name = {name: int(label_id) for label_id, name in labels_by_id.items()}
+    labels_by_name = {
+        name: int(label_id) for label_id, name in labels_by_id.items()
+    }
 
     return labels_by_id, labels_by_name, colors_by_id
 
@@ -73,7 +77,9 @@ def create_matrix_mask(image_slice, lower_threshold, upper_threshold):
     return (image_slice > lower_threshold) & (image_slice < upper_threshold)
 
 
-def select_matrix_thresholds(image_slice, slice_index=None, initial_upper_threshold=200):
+def select_matrix_thresholds(
+    image_slice, slice_index=None, initial_upper_threshold=200
+):
     """
     Select the lower and upper thresholds for the initial matrix mask.
 
@@ -103,21 +109,30 @@ def select_matrix_thresholds(image_slice, slice_index=None, initial_upper_thresh
 
     lower_threshold = float(calculate_otsu_threshold(image_slice))
     upper_threshold = float(initial_upper_threshold)
-    
-    if upper_threshold <= lower_threshold: 
+
+    if upper_threshold <= lower_threshold:
         upper_threshold = float(image_slice.max())
-    
+
     while True:
-        matrix_mask = create_matrix_mask(image_slice, lower_threshold, upper_threshold)
+        matrix_mask = create_matrix_mask(
+            image_slice, lower_threshold, upper_threshold
+        )
 
         fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 
         axes[0].imshow(image_slice, cmap="gray")
-        axes[0].set_title(f"CT Slice {slice_index}" if slice_index is not None else "CT Slice")
+        title = (
+            f"CT Slice {slice_index}"
+            if slice_index is not None
+            else "CT Slice"
+        )
+        axes[0].set_title(title)
         axes[0].axis("off")
 
         axes[1].imshow(matrix_mask, cmap="gray")
-        axes[1].set_title(f"Matrix Mask: {lower_threshold:g} to {upper_threshold:g}")
+        axes[1].set_title(
+            f"Matrix Mask: {lower_threshold:g} to {upper_threshold:g}"
+        )
         axes[1].axis("off")
 
         plt.tight_layout()
@@ -134,7 +149,9 @@ def select_matrix_thresholds(image_slice, slice_index=None, initial_upper_thresh
         lower_threshold = float(input("Lower threshold: "))
         upper_threshold = float(input("Upper threshold: "))
 
-    print(f"Selected thresholds: {lower_threshold:g} to {upper_threshold:g}")
+    print(
+        f"Selected thresholds: {lower_threshold:g} to {upper_threshold:g}"
+    )
     return matrix_mask, lower_threshold, upper_threshold
 
 
@@ -151,8 +168,14 @@ def get_annotation_file(input_file, annotation_dir):
     return annotation_dir / f"{input_file.stem}_labels.tif"
 
 
-def load_or_initialize_annotations(image, input_file, middle_slice,
-                                   labels_by_name, annotation_dir, matrix_mask=None):
+def load_or_initialize_annotations(
+    image,
+    input_file,
+    middle_slice,
+    labels_by_name,
+    annotation_dir,
+    matrix_mask=None,
+):
     """
     Load an existing annotation or create a new annotation volume.
 
@@ -195,15 +218,20 @@ def load_or_initialize_annotations(image, input_file, middle_slice,
 
         if labels_3d.shape != image.shape:
             raise ValueError(
-                f"Saved annotation shape {labels_3d.shape} does not match image shape {image.shape}."
+                f"Saved annotation shape {labels_3d.shape} "
+                f"does not match image shape {image.shape}."
             )
 
         return labels_3d, annotation_file, True
 
     if matrix_mask is None:
-        raise ValueError("matrix_mask is required when creating a new annotation.")
+        raise ValueError(
+            "matrix_mask is required when creating a new annotation."
+        )
 
-    labels_3d = np.full(image.shape, labels_by_name["ToPredict"], dtype=np.uint8)
+    labels_3d = np.full(
+        image.shape, labels_by_name["ToPredict"], dtype=np.uint8
+    )
     labels_3d[middle_slice][matrix_mask] = labels_by_name["Matrix"]
 
     return labels_3d, annotation_file, False

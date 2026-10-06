@@ -6,9 +6,17 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from soilct_segmentation.annotation import get_annotation_file, load_dataset_info, load_or_initialize_annotations, select_matrix_thresholds
+from soilct_segmentation.annotation import (
+    get_annotation_file,
+    load_dataset_info,
+    load_or_initialize_annotations,
+    select_matrix_thresholds,
+)
 from soilct_segmentation.image_io import load_tiff, select_tiff_file
-from soilct_segmentation.napari_tools import open_annotation_viewer, setup_annotation_saving
+from soilct_segmentation.napari_tools import (
+    open_annotation_viewer,
+    setup_annotation_saving,
+)
 from soilct_segmentation.preprocessing import normalize_image
 
 
@@ -71,7 +79,10 @@ class AnnotationSession:
             print("Status: Existing annotation loaded")
         else:
             print("Status: New annotation initialized")
-            print(f"Matrix thresholds: {self.lower_threshold:g} to {self.upper_threshold:g}")
+            print(
+                f"Matrix thresholds: {self.lower_threshold:g} "
+                f"to {self.upper_threshold:g}"
+            )
 
 
 def show_image_inspection(image, middle_slice):
