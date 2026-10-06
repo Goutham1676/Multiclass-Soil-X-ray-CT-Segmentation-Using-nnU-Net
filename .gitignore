@@ -142,3 +142,16 @@ dmypy.json
 /anaconda_projects/
 .Rhistory
 /.virtual_documents/
+
+# AI/editor tooling
+.cursorrules
+CLAUDE.md
+
+# Pre-commit
+.pre-commit-config.yaml
+
+# Secrets
+.secrets.baseline
+
+# GitHub configuration
+.github/

@@ -39,3 +39,7 @@ no_implicit_optional = true
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["soilct_segmentation/tests"]
+
+filterwarnings = [
+    "ignore:`json_encoders` is deprecated:DeprecationWarning"
+]
