@@ -60,6 +60,16 @@ Run the tests:
 
 Expected result: 11 tests passed.
 
+The annotation workflow was manually checked using the input CT stack. Edits made in Napari were saved and remained present after closing and reopening the workflow.
+
+### Assumptions and Limitations
+- Zero-valued voxels are treated as background during normalization and Otsu threshold calculation.
+
+- Initial matrix labels are based on intensity thresholds and require manual review.
+
+- Workflow validation currently covers the input CT stack. nnU-Net training, prediction, and segmentation accuracy have not yet been evaluated.
+
+
 ## Current Status
 
 ### Milestone 1
