@@ -24,8 +24,6 @@ will mainly be evaluated using Dice scores for each class.
 
 - `paper/` – project proposal and later manuscript files
 - `soilct_segmentation/` – Python code for the project
-- `guides/` – supporting documentation from the course template
-- `.github/` – GitHub Actions workflows
 - `environment.yml` – software environment information
 - `pyproject.toml` – Python project configuration
 
