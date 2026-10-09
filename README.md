@@ -46,13 +46,18 @@ Then start JupyterLab:
 `jupyter lab`
 
 ## Testing and Validation
-Before running pytest, make sure the soilct environment is activated. Run these commands from the repository root:
+
+Before running pytest, make sure the `soilct` environment is activated. Run these commands from the repository root:
 
 `conda activate soilct`
 
-Run the tests:
+Run the tests using either command:
 
 `python -m pytest`
+
+or
+
+`make test`
 
 - **test_imports.py** checks that the required libraries can be imported.
 
@@ -60,9 +65,11 @@ Run the tests:
 
 Expected result: 11 tests passed.
 
-The annotation workflow was manually checked using the input CT stack. Edits made in Napari were saved and remained present after closing and reopening the workflow.
+I manually checked the annotation workflow using the input CT stack. Edits made in Napari were saved and remained present after closing and reopening the workflow.
+To repeat this check, run 01_soil_ct_annotation_workflow.ipynb, edit an annotation, save with Ctrl+S or close the Napari window, and reopen it to confirm that the edit remains.
 
 ### Assumptions and Limitations
+
 - Zero-valued voxels are treated as background during normalization and Otsu threshold calculation.
 
 - Initial matrix labels are based on intensity thresholds and require manual review.
@@ -92,6 +99,13 @@ Milestone 2 established the initial working environment for soil X-ray CT segmen
 - added support for saving and reloading annotation volumes for continued editing
 - organized the workflow into reusable Python modules with a simplified notebook interface
 - added basic automated tests and validated the workflow through GitHub Actions
+
+### Milestone 3
+
+For this milestone, I added tests to check that the required libraries can be imported. All 11 tests passed using both pytest and `make test`. 
+I also checked that edits made in Napari were saved and still present after reopening the annotation. 
+Instructions for running the tests and the current assumptions and limitations are included above.
+These results will support the testing and software quality discussion in the final report.
 
 ## Next Steps
 
