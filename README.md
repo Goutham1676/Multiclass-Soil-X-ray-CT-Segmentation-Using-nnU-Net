@@ -45,6 +45,21 @@ Then start JupyterLab:
 
 `jupyter lab`
 
+## Testing and Validation
+Before running pytest, make sure the soilct environment is activated. Run these commands from the repository root:
+
+`conda activate soilct`
+
+Run the tests:
+
+`python -m pytest`
+
+- test_imports.py checks that the required libraries can be imported.
+
+- test_pytest.py tests core annotation functions and selected invalid inputs.
+
+Expected result: 11 tests passed.
+
 ## Current Status
 
 ### Milestone 1
