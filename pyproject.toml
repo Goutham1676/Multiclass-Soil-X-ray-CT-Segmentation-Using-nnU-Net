@@ -1,21 +1,19 @@
-# Overview:
-# - Purpose: Central configuration for Python tooling.
-# - Used by: pytest, black, ruff, mypy, and packaging tools.
-# - Adds: Consistent behavior across local development and CI.
-# - Learn more: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+# Configuration for the soil CT segmentation package.
+# Defines package information, test discovery, and code-quality settings.
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "soilct-segmentation"
+name = "soilct_segmentation"
 version = "0.1.0"
-description = "Starter package for research software projects"
+description = "Tools for soil X-ray CT preprocessing and multiclass annotation"
 readme = "README.md"
 requires-python = ">=3.11"
 
 [tool.setuptools.packages.find]
-include = ["soilct-segmentation*"]
+include = ["soilct_segmentation*"]
 
 [tool.black]
 line-length = 88
