@@ -1,0 +1,5 @@
+## Reflection
+
+The physical modeling exercises helped me understand how simulation tools are set up and used for numerical modeling. I was able to install and build MFEM, run the example simulations, and also set up and run BESFEM using a Michigan TIFF image. The simulations ran successfully, but I was not able to fully visualize the results because of the graphical display setup on the computing system. Even with that limitation, the exercises helped me understand the connection between the input geometry, mesh generation, simulation, and output files.
+
+This exercise was useful for my soil µCT segmentation project because it showed me how image-based data can be connected to physical modeling workflows. Although physical simulation is not a main part of my current project, the exercise helped me understand how segmented image structures could potentially be used in later modeling work.
