@@ -23,8 +23,9 @@ def build_napari_colors(colors_by_id):
     return colors
 
 
-def open_annotation_viewer(image, labels, colors_by_id,
-                           opacity=0.65, blending="additive"):
+def open_annotation_viewer(
+    image, labels, colors_by_id, opacity=0.65, blending="additive"
+):
     """
     Open the CT image and annotation labels in Napari.
 
@@ -59,7 +60,7 @@ def open_annotation_viewer(image, labels, colors_by_id,
         name="Annotations",
         colormap=napari_colors,
         opacity=opacity,
-        blending=blending
+        blending=blending,
     )
 
     return viewer, label_layer

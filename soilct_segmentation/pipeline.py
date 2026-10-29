@@ -23,41 +23,43 @@ from soilct_segmentation.preprocessing import normalize_image
 @dataclass
 class AnnotationSession:
     """
-    Store information associated with one annotation session.
+    Store the image and annotation details for one session.
 
     Parameters
     ----------
     input_file : pathlib.Path
-        Selected source CT TIFF.
+        Selected CT TIFF file.
     image : numpy.ndarray
-        Original CT volume.
+        Original CT stack.
     prepared_image : numpy.ndarray
-        CT volume after preprocessing.
+        CT stack after preprocessing.
     middle_slice : int
-        Representative middle-slice index.
-    labels_3d : numpy.ndarray
-        Current 3D annotation volume.
+        Index of the middle slice.
+    labels_3d : numpy.ndarray or None
+        Annotation volume, if initialized or loaded.
     annotation_file : pathlib.Path
-        Annotation TIFF path.
+        Path to the annotation TIFF.
     labels_by_id : dict
-        Mapping from label IDs to class names.
+        Label IDs and their class names.
     labels_by_name : dict
-        Mapping from class names to integer IDs.
+        Class names and their label IDs.
     colors_by_id : dict
-        Annotation colors.
+        Colors assigned to the annotation classes.
     loaded_existing : bool
         Whether an existing annotation was loaded.
     lower_threshold : float or None
-        Accepted lower matrix threshold.
+        Selected lower matrix threshold.
     upper_threshold : float or None
-        Accepted upper matrix threshold.
+        Selected upper matrix threshold.
+    selection : dict or None
+        Threshold slider results for a new annotation.
     """
 
     input_file: Path
     image: np.ndarray
     prepared_image: np.ndarray
     middle_slice: int
-    labels_3d: np.ndarray
+    labels_3d: np.ndarray | None
     annotation_file: Path
     labels_by_id: dict
     labels_by_name: dict
@@ -65,9 +67,10 @@ class AnnotationSession:
     loaded_existing: bool
     lower_threshold: float | None = None
     upper_threshold: float | None = None
+    selection: dict | None = None
 
     def summary(self):
-        """Print a short summary of the annotation session."""
+        """Print the current annotation details."""
 
         print("\nAnnotation Session")
         print(f"Input: {self.input_file.name}")
@@ -87,9 +90,16 @@ class AnnotationSession:
 
 def show_image_inspection(image, middle_slice):
     """
-    Show the middle CT slice and intensity histogram.
+    Display the middle CT slice and intensity histogram.
 
-    Zero-valued background voxels are excluded from the histogram.
+    The histogram uses nonzero voxels from the full CT stack.
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        Input CT stack.
+    middle_slice : int
+        Index of the slice to display.
     """
 
     middle_image = image[middle_slice]
@@ -114,35 +124,36 @@ def show_image_inspection(image, middle_slice):
     plt.show()
 
 
-def prepare_annotation_session(input_dir="soilct_segmentation/Input data",
-                               dataset_info_path="dataset_info.json",
-                               annotation_dir="soilct_segmentation/Annotations",
-                               initial_upper_threshold=200,
-                               show_inspection=True):
+def prepare_annotation_session(
+    input_dir="soilct_segmentation/Input data",
+    dataset_info_path="dataset_info.json",
+    annotation_dir="soilct_segmentation/Annotations",
+    initial_upper_threshold=200,
+    show_inspection=True,
+):
     """
-    Prepare a soil CT image for annotation.
+    Load and prepare a CT stack for annotation.
 
-    The TIFF stack is loaded, inspected, normalized, and checked for an
-    existing annotation. For a new annotation, Otsu thresholding is used
-    to initialize the soil matrix on the middle slice.
+    Checks for an existing annotation. If none is found, the middle
+    slice is used to select the initial matrix thresholds.
 
     Parameters
     ----------
     input_dir : str or pathlib.Path
-        Directory containing the input CT TIFF stack.
+        Folder containing the CT TIFF stack.
     dataset_info_path : str or pathlib.Path
         Path to dataset_info.json.
     annotation_dir : str or pathlib.Path
-        Directory used to store annotation TIFF files.
+        Folder used to save annotation TIFF files.
     initial_upper_threshold : float
-        Starting upper threshold for matrix initialization.
+        Starting upper threshold for matrix selection.
     show_inspection : bool
-        Whether to display the middle slice and intensity histogram.
+        Whether to display the middle slice and histogram.
 
     Returns
     -------
     AnnotationSession
-        Prepared annotation session.
+        Session containing the image and annotation information.
     """
 
     input_file = select_tiff_file(input_dir)
@@ -161,12 +172,17 @@ def prepare_annotation_session(input_dir="soilct_segmentation/Input data",
 
     lower_threshold = None
     upper_threshold = None
+    selection = None
 
     if annotation_file.exists():
         print("\nExisting annotation found.")
 
         labels_3d, annotation_file, loaded_existing = load_or_initialize_annotations(
-            prepared_image, input_file, middle_slice, labels_by_name, annotation_dir
+            prepared_image,
+            input_file,
+            middle_slice,
+            labels_by_name,
+            annotation_dir,
         )
 
     else:
@@ -174,16 +190,14 @@ def prepare_annotation_session(input_dir="soilct_segmentation/Input data",
 
         middle_image = prepared_image[middle_slice]
 
-        matrix_mask, lower_threshold, upper_threshold = select_matrix_thresholds(
+        selection = select_matrix_thresholds(
             middle_image,
             slice_index=middle_slice,
-            initial_upper_threshold=initial_upper_threshold
+            initial_upper_threshold=initial_upper_threshold,
         )
 
-        labels_3d, annotation_file, loaded_existing = load_or_initialize_annotations(
-            prepared_image, input_file, middle_slice, labels_by_name,
-            annotation_dir, matrix_mask
-        )
+        labels_3d = None
+        loaded_existing = False
 
     session = AnnotationSession(
         input_file=Path(input_file),
@@ -197,20 +211,22 @@ def prepare_annotation_session(input_dir="soilct_segmentation/Input data",
         colors_by_id=colors_by_id,
         loaded_existing=loaded_existing,
         lower_threshold=lower_threshold,
-        upper_threshold=upper_threshold
+        upper_threshold=upper_threshold,
+        selection=selection,
     )
 
-    session.summary()
+    if session.loaded_existing:
+        session.summary()
+
     return session
 
 
 def launch_annotation_session(session, opacity=0.65, blending="additive"):
     """
-    Open a prepared annotation session in Napari.
+    Open the CT stack and annotation labels in Napari.
 
-    The CT image is displayed as a grayscale layer and the annotation is
-    added as an editable labels layer. Ctrl+S saves manually, and closing
-    Napari saves the current annotation automatically.
+    For a new annotation, initialize the matrix mask using the accepted
+    thresholds. Save annotations manually with Ctrl+S or when Napari closes.
 
     Parameters
     ----------
@@ -226,26 +242,44 @@ def launch_annotation_session(session, opacity=0.65, blending="additive"):
     viewer
         Napari viewer.
     label_layer
-        Editable labels layer.
+        Editable annotation layer.
     save_current_annotations
-        Function used to save the current annotation.
+        Function used to save the annotation.
     """
+
+    if session.selection is not None:
+        if not session.selection["accepted"]:
+            raise RuntimeError("Click Accept on the threshold slider first.")
+
+        session.lower_threshold = session.selection["lower"]
+        session.upper_threshold = session.selection["upper"]
+
+        (
+            session.labels_3d,
+            session.annotation_file,
+            session.loaded_existing,
+        ) = load_or_initialize_annotations(
+            session.prepared_image,
+            session.input_file,
+            session.middle_slice,
+            session.labels_by_name,
+            session.annotation_file.parent,
+            session.selection["mask"],
+        )
+
+        session.selection = None
+        session.summary()
 
     viewer, label_layer = open_annotation_viewer(
         session.prepared_image,
         session.labels_3d,
         session.colors_by_id,
         opacity=opacity,
-        blending=blending
+        blending=blending,
     )
 
     save_current_annotations = setup_annotation_saving(
         viewer, label_layer, session.annotation_file
     )
-
-    print("\nNapari annotation session ready.")
-    print("Ctrl+S -> save annotations")
-    print("Close Napari -> save automatically")
-    print(f"Output -> {session.annotation_file}")
 
     return viewer, label_layer, save_current_annotations

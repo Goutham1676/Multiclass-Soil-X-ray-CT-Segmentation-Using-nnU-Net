@@ -6,6 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import tifffile
+from matplotlib.widgets import Button, RangeSlider
 from skimage.filters import threshold_otsu
 
 
@@ -40,9 +41,7 @@ def load_dataset_info(dataset_info_path):
 
     labels_by_id = dataset_info["labels"]
     colors_by_id = dataset_info["colors"]
-    labels_by_name = {
-        name: int(label_id) for label_id, name in labels_by_id.items()
-    }
+    labels_by_name = {name: int(label_id) for label_id, name in labels_by_id.items()}
 
     return labels_by_id, labels_by_name, colors_by_id
 
@@ -83,10 +82,8 @@ def select_matrix_thresholds(
     """
     Select the lower and upper thresholds for the initial matrix mask.
 
-    Otsu thresholding is used as the starting lower threshold. The upper
-    threshold is used to exclude brighter materials such as stones or
-    mineral grains. The image and mask are displayed so the thresholds
-    can be visually checked and adjusted.
+    Otsu provides the starting lower threshold. The range slider lets
+    the user adjust both thresholds and see the matrix mask update.
 
     Parameters
     ----------
@@ -99,60 +96,72 @@ def select_matrix_thresholds(
 
     Returns
     -------
-    matrix_mask : numpy.ndarray
-        Final matrix mask.
-    lower_threshold : float
-        Selected lower threshold.
-    upper_threshold : float
-        Selected upper threshold.
+    dict
+        Stores the current mask, lower and upper thresholds, and whether
+        the selection has been accepted.
     """
 
-    lower_threshold = float(calculate_otsu_threshold(image_slice))
-    upper_threshold = float(initial_upper_threshold)
+    lower = float(calculate_otsu_threshold(image_slice))
+    maximum = float(image_slice.max())
+    upper = min(float(initial_upper_threshold), maximum)
 
-    if upper_threshold <= lower_threshold:
-        upper_threshold = float(image_slice.max())
+    if upper <= lower:
+        upper = maximum
 
-    while True:
-        matrix_mask = create_matrix_mask(
-            image_slice, lower_threshold, upper_threshold
-        )
+    if upper <= lower:
+        raise ValueError("Unable to create a valid threshold range.")
 
-        fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    mask = create_matrix_mask(image_slice, lower, upper)
+    result = {"mask": mask, "lower": lower, "upper": upper, "accepted": False}
 
-        axes[0].imshow(image_slice, cmap="gray")
-        title = (
-            f"CT Slice {slice_index}"
-            if slice_index is not None
-            else "CT Slice"
-        )
-        axes[0].set_title(title)
-        axes[0].axis("off")
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    plt.subplots_adjust(bottom=0.22)
 
-        axes[1].imshow(matrix_mask, cmap="gray")
-        axes[1].set_title(
-            f"Matrix Mask: {lower_threshold:g} to {upper_threshold:g}"
-        )
-        axes[1].axis("off")
+    axes[0].imshow(image_slice, cmap="gray")
+    title = f"CT Slice {slice_index}" if slice_index is not None else "CT Slice"
+    axes[0].set_title(title)
+    axes[0].axis("off")
 
-        plt.tight_layout()
-        plt.show()
+    mask_image = axes[1].imshow(mask, cmap="gray")
+    axes[1].set_title(f"Matrix Mask: {lower:g} to {upper:g}")
+    axes[1].axis("off")
 
-        choice = input(
-            f"Accept thresholds? Lower={lower_threshold:g}, "
-            f"Upper={upper_threshold:g} (y/n): "
-        ).lower()
-
-        if choice == "y":
-            break
-
-        lower_threshold = float(input("Lower threshold: "))
-        upper_threshold = float(input("Upper threshold: "))
-
-    print(
-        f"Selected thresholds: {lower_threshold:g} to {upper_threshold:g}"
+    slider_ax = fig.add_axes([0.20, 0.08, 0.45, 0.04])
+    slider = RangeSlider(
+        slider_ax, "Thresholds", 0, maximum, valinit=(lower, upper), valstep=1
     )
-    return matrix_mask, lower_threshold, upper_threshold
+
+    def update(values):
+        lower, upper = values
+        result["mask"] = create_matrix_mask(image_slice, lower, upper)
+        result["lower"], result["upper"] = lower, upper
+        result["accepted"] = False
+
+        mask_image.set_data(result["mask"])
+        axes[1].set_title(f"Matrix Mask: {lower:g} to {upper:g}")
+        fig.canvas.draw_idle()
+
+    def update_on_release(event):
+        if event.inaxes == slider_ax:
+            update(slider.val)
+
+    fig.canvas.mpl_connect("button_release_event", update_on_release)
+
+    button_ax = fig.add_axes([0.83, 0.05, 0.10, 0.06])
+    button = Button(button_ax, "Accept")
+
+    def accept(event):
+        result["accepted"] = True
+        print(f"Selected thresholds: {result['lower']:g} to {result['upper']:g}")
+
+    button.on_clicked(accept)
+    plt.show()
+
+    result["figure"] = fig
+    result["slider"] = slider
+    result["button"] = button
+
+    return result
 
 
 def get_annotation_file(input_file, annotation_dir):
@@ -169,12 +178,7 @@ def get_annotation_file(input_file, annotation_dir):
 
 
 def load_or_initialize_annotations(
-    image,
-    input_file,
-    middle_slice,
-    labels_by_name,
-    annotation_dir,
-    matrix_mask=None,
+    image, input_file, middle_slice, labels_by_name, annotation_dir, matrix_mask=None
 ):
     """
     Load an existing annotation or create a new annotation volume.
@@ -225,13 +229,9 @@ def load_or_initialize_annotations(
         return labels_3d, annotation_file, True
 
     if matrix_mask is None:
-        raise ValueError(
-            "matrix_mask is required when creating a new annotation."
-        )
+        raise ValueError("matrix_mask is required when creating a new annotation.")
 
-    labels_3d = np.full(
-        image.shape, labels_by_name["ToPredict"], dtype=np.uint8
-    )
+    labels_3d = np.full(image.shape, labels_by_name["ToPredict"], dtype=np.uint8)
     labels_3d[middle_slice][matrix_mask] = labels_by_name["Matrix"]
 
     return labels_3d, annotation_file, False
