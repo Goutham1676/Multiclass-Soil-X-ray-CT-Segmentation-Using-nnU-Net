@@ -9,16 +9,16 @@ truth labels and continues through nnU-Net training, prediction, and evaluation.
 
 ## Project Workflow
 
-The planned workflow is:
+The current workflow focuses on preparing soil X-ray CT images and creating multiclass annotations.
 
-CT images → annotation in Napari → manual annotation review →
-nnU-Net data preparation → preprocessing → training → prediction → evaluation
+1. Load, inspect, and normalize the CT stack.
+2. Use Otsu thresholding and an interactive slider to select the initial soil matrix.
+3. Open the image in Napari for manual annotation and refinement.
+4. Save the annotations as a 3D TIFF stack for continued editing.
 
-Napari will be used to create the ground truth annotations. These annotations
-will be manually reviewed before they are used for training.
+Existing annotations are loaded directly without repeating the threshold selection.
 
-nnU-Net will be used for multiclass segmentation, and the segmentation results
-will mainly be evaluated using Dice scores for each class.
+The next phase will involve preparing the annotated images for nnU-Net training, prediction, and evaluation using class-wise Dice scores.
 
 ## Repository Structure
 
@@ -27,21 +27,30 @@ will mainly be evaluated using Dice scores for each class.
 - `environment.yml` – software environment information
 - `pyproject.toml` – Python project configuration
 
+
 ## Setup
 
-The project environment is defined in `environment.yml`.
+Clone the repository and navigate to the project folder.
 
-Create the Conda environment from the repository root:
+Create and activate the Conda environment:
 
-`conda env create -f environment.yml`
+```bash
+conda env create -f environment.yml
+conda activate soilct
+```
 
-Activate the environment:
+Start JupyterLab:
 
-`conda activate soilct`
+```bash
+jupyter lab
+```
 
-Then start JupyterLab:
 
-`jupyter lab`
+The `00_prototype_development_reference.ipynb` notebook shows the annotation workflow step by step, including the code used for preprocessing, threshold selection, and Napari annotation.
+
+The `01_soil_ct_annotation_workflow.ipynb` notebook provides a simpler workflow using the functions organized in `soilct_segmentation/`.
+
+
 
 ## Testing and Validation
 
@@ -104,6 +113,14 @@ For this milestone, I added tests to check that the required libraries can be im
 I also checked that edits made in Napari were saved and still present after reopening the annotation. 
 Instructions for running the tests and the current assumptions and limitations are included above.
 These results will support the testing and software quality discussion in the final report.
+
+### Milestone 4
+
+For this milestone, I updated the README with setup instructions, annotation steps, and input and output details. I also reviewed the Python docstrings and notebook documentation.
+
+All 11 tests passed using make check, and Ruff found no issues.
+
+These updates will help others run the workflow and document the methods in the final JOSS-style paper.
 
 ## Next Steps
 
