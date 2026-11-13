@@ -149,7 +149,7 @@ All 11 tests passed using `make test`, and Ruff reported no issues. The main wor
 The next phase will focus on:
 
 - completing and reviewing representative multiclass annotations
-- preparing CT images and labels in nnU-Net format
+- finalizing and preparation of CT images and labels in nnU-Net format
 - training and evaluating the multiclass segmentation model
 
 ## Related Work
